@@ -1,7 +1,7 @@
-import Labelln from './Labelln.jsx';
-import Label from './label.jsx';
-import Button from './Button.jsx';
-import InputText from './InputText.jsx';
+import Labelln from '../componentes/Labelln.jsx';
+import Label from '../componentes/label.jsx';
+import Button from '../componentes/Button.jsx';
+import InputText from '../componentes/InputText.jsx';
 
 function Login() {
   return (
