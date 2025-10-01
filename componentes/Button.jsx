@@ -1,7 +1,17 @@
-import React from 'react';
+import "./Button.css";
+import React, { useState } from 'react';
 
-export default class Button extends React.Component {
-  render() {
-    return <button>{this.props.valor}</button>;
+
+export default function Button({ valor }) {
+  const [texto, setTexto] = useState(valor);
+
+  function handleClick() {
+    setTexto("Você clicou!");
   }
+
+  return (
+    <button  className="btn" onClick={handleClick}>
+      {texto}
+    </button>
+  );
 }
