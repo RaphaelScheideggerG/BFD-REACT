@@ -3,7 +3,7 @@ import Label from './label.jsx';
 import Button from './Button.jsx';
 import InputText from './InputText.jsx';
 
-function Login() {
+export default function Login() {
   return (
     <>
       <Labelln texto="Login" />
@@ -16,5 +16,3 @@ function Login() {
     </>
   );
 }
-
-export default Login;
