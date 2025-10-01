@@ -11,16 +11,16 @@ function Cadastro() {
       <form className="cadastro-form">
         <LabelTitle texto="Cadastro" />
 
-        <div className="cadastro-group">
+        <div className="form-group">
           <Label texto="Usuário:" />
           <InputText placeholder="user..." />
         </div>
 
-        <div className="cadastro-group">
+        <div className="form-group">
           <Label texto="Senha:" />
           <InputPassword placeholder="password..." />
         </div>
-        <div className="cadastro-group">
+        <div className="form-group">
           <Label texto="Confirmação:" />
           <InputPassword placeholder="Confirm Password..." />
         </div>
