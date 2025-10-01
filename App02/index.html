@@ -1,13 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+<!doctype html>                             <!-- (1) Define HTML5; evita modos de compatibilidade nos browsers -->
+<html lang="en">                            <!-- (2) Idioma do documento (acessibilidade/SEO). Em PT-BR, use lang="pt-BR" -->
+  <head>                                    <!-- (3) Início do cabeçalho: metadados, título, ícones, manifest, etc. -->
+    <meta charset="UTF-8" />                <!-- (4) Conjunto de caracteres em UTF-8 (acentos, emojis, símbolos) -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Frontend ReactJS - BfD</title>
-  </head>
-  <body>
-    <div id="root"></div>
+                                            <!-- (5) Responsividade: 1 CSS pixel = 1 device-independent pixel na largura do viewport -->
+    <title>ReactJS - Bolsa Futuro Digital</title>
+                                            <!-- (6) Título exibido na aba do navegador e usado por mecanismos de busca -->
+  </head>                                   <!-- (7) Fim do cabeçalho -->
+  <body>                                    <!-- (8) Início do corpo do documento -->
+    <div id="root"></div>                   <!-- (9) Ponto de montagem do React; o React injeta a UI aqui -->
     <script type="module" src="/src/main.jsx"></script>
-  </body>
-</html>
+                                            <!-- (10) Carrega o módulo ES (Vite) que inicializa o React (createRoot/render) -->
+  </body>                                   <!-- (11) Fim do corpo -->
+</html>                                     <!-- (12) Fim do documento HTML -->
