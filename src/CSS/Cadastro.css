@@ -17,7 +17,7 @@
   .form-group {
     margin-bottom: 1rem;   /* espaço entre cada campo */
     display: flex;
-    flex-direction: column; /* empilha label e input */
+    flex-direction: column; /* empilha label e input*/
   }  
   
  
