@@ -26,5 +26,17 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.14",
     "vite": "^7.1.7"
-  }
+  },
+  "description": "",
+  "main": "eslint.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RaphaelScheideggerG/BFD-REACT.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RaphaelScheideggerG/BFD-REACT/issues"
+  },
+  "homepage": "https://github.com/RaphaelScheideggerG/BFD-REACT#readme"
 }
