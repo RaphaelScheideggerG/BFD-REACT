@@ -4,7 +4,6 @@ import PJLogin from './tailwind/PJLogin.jsx';
 export default function App() {
   return (
     <>
-      <PFLogin/>
       <PJLogin/>
     </>
   )

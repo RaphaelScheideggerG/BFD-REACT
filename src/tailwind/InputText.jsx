@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export default function InputText({ placeholder }) {
+export default function InputText({ placeholder, onFocus, onChange, onBlur }) {
   const [valor, setValor] = useState("");
   const [erro, setErro] = useState(false);
 
@@ -11,12 +11,15 @@ export default function InputText({ placeholder }) {
   }
 
   return (
-    <div className="flex flex-col mb-3">
+    <div className="flex flex-col mb-3" onChange={handleChange}>
       <input
         type="text"
         placeholder={placeholder}
+        onChange={onChange}
+        onFocus={onFocus}
         value={valor}
-        onChange={handleChange}
+        onBlur={onBlur}
+        autoComplete="off"
         className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:border-blue-600 focus:ring-1 focus:ring-blue-400 outline-none"
       />
       {erro && (

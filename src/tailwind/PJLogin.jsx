@@ -4,7 +4,9 @@ import Label from "./Label.jsx";
 import LabelTitle from "./LabelTitle.jsx";
 import Button from "./Button.jsx";
 import InputText from "./InputText.jsx";
-import InputPassword from "./InputPassword.jsx";
+import InputDate from "./inputDate.jsx";
+import SelectList from "./SelectList.jsx";
+import List from "./list.jsx";
 
 function PJLogin() {
   return (
@@ -14,29 +16,37 @@ function PJLogin() {
 
         <div className="mb-4 flex flex-col">
           <Label texto="Nome:" />
-          <InputPassword placeholder="name..." />
+          <InputText placeholder="name..." />
         </div>
 
         <div className="mb-4 flex flex-col">
           <Label texto="CNPJ:" />
-          <InputPassword placeholder="CNPJ..." />
+          <InputText placeholder="CNPJ..." />
         </div>
 
         <div className="mb-4 flex flex-col">
           <Label texto="Email:" />
-          <InputPassword placeholder="email..." />
+          <InputText placeholder="email..." />
         </div>
 
         <div className="mb-4 flex flex-col">
           <Label texto="Endereço:" />
-          <InputPassword placeholder="Logradouro..." />
-          <InputPassword placeholder="Cep..." />
+          <InputText placeholder="Logradouro..." />
+          <InputText placeholder="Cep..." />
         </div>
 
         <div className="mb-4 flex flex-col">
           <Label texto="Telefone:" />
-          <div class="flex ...">  <div class="w-1/5 ..."><InputPassword placeholder="DDD..."/></div>  <div class="w-4/5 ..."><InputPassword placeholder="Numero..."/></div></div>
+          <div className="flex ...">  <div className="w-1/5 ..."><InputText placeholder="DDD..."/></div>  <div className="w-4/5 ..."><InputText placeholder="Numero..."/></div></div>
 
+        </div>
+
+        <div className="mb-4 flex flex-col">
+          <Label texto="Inscrição Estadual:" />
+          <label texto="Data:"/>
+          <InputText placeholder="Numero..." />
+          <List></List>
+          <InputDate datelabel="Data de Registro"/>
         </div>
 
         <Button valor="Logar" />
