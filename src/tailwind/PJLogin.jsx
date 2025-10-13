@@ -4,9 +4,8 @@ import Label from "./Label.jsx";
 import LabelTitle from "./LabelTitle.jsx";
 import Button from "./Button.jsx";
 import InputText from "./InputText.jsx";
-import InputDate from "./inputDate.jsx";
-import SelectList from "./SelectList.jsx";
-import List from "./list.jsx";
+import InputDate from "./InputDate.jsx";
+import List from "./List.jsx";
 
 function PJLogin() {
   return (

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Label from "./Label";
 
 export default function InputDate({datelabel})
 {
