@@ -20,7 +20,7 @@ export default function EnderecoForm() {
   const [uf, setUf] = useState("");
   const [ufPreenchidoAutomaticamente, setUfPreenchidoAutomaticamente] = useState(false);
 
-  // Atualiza os campos quando o endereço muda, mas só se o usuário ainda não mexeu.
+  // Atualiza os campos quando o endereço muda, mas só se o usuário ainda não mexeu
 
   useEffect(() => {
     if (endereco && endereco.logradouro) {
