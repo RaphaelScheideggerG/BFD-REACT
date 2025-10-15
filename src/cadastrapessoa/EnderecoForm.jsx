@@ -1,9 +1,51 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Input, Row, Col, Select } from "antd";
+import ConsultarEndereco from "./ConsultarEndereco.mjs";
 
 const { Option } = Select;
 
-function EnderecoForm() {
+export default function EnderecoForm() {
+  const [CEP, setCEP] = useState("");
+  const [endereco, setEndereco] = useState({});
+
+  const [logradouro, setLogradouro] = useState("");
+  const [logradouroPreenchidoAutomaticamente, setLogradouroPreenchidoAutomaticamente] = useState(false);
+
+  const [bairro, setBairro] = useState("");
+  const [bairroPreenchidoAutomaticamente, setBairroPreenchidoAutomaticamente] = useState(false);
+
+  const [cidade, setCidade] = useState("");
+  const [cidadePreenchidoAutomaticamente, setCidadePreenchidoAutomaticamente] = useState(false);
+
+  const [uf, setUf] = useState("");
+  const [ufPreenchidoAutomaticamente, setUfPreenchidoAutomaticamente] = useState(false);
+
+  // Atualiza os campos quando o endereço muda, mas só se o usuário ainda não mexeu
+
+  useEffect(() => {
+    if (endereco && endereco.logradouro) {
+      if (!logradouroPreenchidoAutomaticamente) setLogradouro(endereco.logradouro || "");
+      if (!bairroPreenchidoAutomaticamente) setBairro(endereco.bairro || "");
+      if (!cidadePreenchidoAutomaticamente) setCidade(endereco.cidade || "");
+      if (!ufPreenchidoAutomaticamente) setUf(endereco.uf || "");
+
+      console.log("Campos atualizados via useEffect:",
+        "\nENDEREÇO:", endereco,
+        "\nLOGRADOURO:", endereco.logradouro,
+        "\nBAIRRO:", endereco.bairro,
+        "\nCIDADE:", endereco.cidade,
+        "\nUF:", endereco.uf
+      );
+    }
+  }, [endereco]);
+
+  const HandleSearch = async (cepDigitado) => {
+    console.log("CEP, após rodar:", cepDigitado);
+    const end = await ConsultarEndereco(cepDigitado);
+    console.log("endereço definido:", end);
+    setEndereco(end); // dispara o useEffect
+  };
+
   return (
     <>
       <Form.Item
@@ -11,50 +53,73 @@ function EnderecoForm() {
         name={["endereco", "cep"]}
         rules={[{ required: true, message: "Informe o CEP!" }]}
       >
-        <Input placeholder="00000-000" maxLength={9} />
+        <Input
+          placeholder="00000-000"
+          maxLength={9}
+          value={CEP}
+          onChange={(e) => {
+            const novoCep = e.target.value;
+            setCEP(novoCep);
+            console.log("Digitando:", novoCep);
+            if (novoCep.length === 9) {
+              HandleSearch(novoCep);
+            }
+          }}
+        />
       </Form.Item>
 
-      <Form.Item
-        label="Logradouro"
-        name={["endereco", "logradouro"]}
-        rules={[{ required: true, message: "Informe o logradouro!" }]}
-      >
-        <Input placeholder="Rua / Avenida" />
+      <Form.Item label="Logradouro">
+        <Input
+          placeholder="Rua / Avenida"
+          value={logradouro}
+          onChange={(e) => {
+            setLogradouro(e.target.value);
+            setLogradouroPreenchidoAutomaticamente(true);
+          }}
+        />
       </Form.Item>
 
-      <Form.Item
-        label="Bairro"
-        name={["endereco", "bairro"]}
-        rules={[{ required: true, message: "Informe o bairro!" }]}
-      >
-        <Input placeholder="Bairro" />
+      <Form.Item label="Bairro">
+        <Input
+          placeholder="Bairro"
+          value={bairro}
+          onChange={(e) => {
+            setBairro(e.target.value);
+            setBairroPreenchidoAutomaticamente(true);
+          }}
+        />
       </Form.Item>
 
       <Row gutter={8}>
         <Col span={12}>
-          <Form.Item
-            label="Cidade"
-            name={["endereco", "cidade"]}
-            rules={[{ required: true, message: "Informe a cidade!" }]}
-          >
-            <Input placeholder="Cidade" />
+          <Form.Item label="Cidade">
+            <Input
+              placeholder="Cidade"
+              value={cidade}
+              onChange={(e) => {
+                setCidade(e.target.value);
+                setCidadePreenchidoAutomaticamente(true);
+              }}
+            />
           </Form.Item>
         </Col>
+
         <Col span={6}>
-          <Form.Item
-            label="UF"
-            name={["endereco", "uf"]}
-            rules={[{ required: true, message: "Informe a UF!" }]}
-          >
-            <Input placeholder="UF" maxLength={2} />
+          <Form.Item label="UF">
+            <Input
+              placeholder="UF"
+              maxLength={2}
+              value={uf}
+              onChange={(e) => {
+                setUf(e.target.value.toUpperCase());
+                setUfPreenchidoAutomaticamente(true);
+              }}
+            />
           </Form.Item>
         </Col>
+
         <Col span={6}>
-         <Form.Item
-            label="Região"
-            name={["endereco", "regiao"]}
-            rules={[{ required: true, message: "Selecione a região!" }]}
-          >
+          <Form.Item label="Região" name={["endereco", "regiao"]}>
             <Select placeholder="Selecione">
               <Option value="Norte">Norte</Option>
               <Option value="Nordeste">Nordeste</Option>
@@ -68,5 +133,3 @@ function EnderecoForm() {
     </>
   );
 }
-
-export default EnderecoForm;
