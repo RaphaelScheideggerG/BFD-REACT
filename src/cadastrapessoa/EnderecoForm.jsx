@@ -20,8 +20,9 @@ export default function EnderecoForm() {
   const [uf, setUf] = useState("");
   const [ufPreenchidoAutomaticamente, setUfPreenchidoAutomaticamente] = useState(false);
 
+  
+  /*
   // Atualiza os campos quando o endereço muda, mas só se o usuário ainda não mexeu
-
   useEffect(() => {
     if (endereco && endereco.logradouro) {
       if (!logradouroPreenchidoAutomaticamente) setLogradouro(endereco.logradouro || "");
@@ -37,14 +38,26 @@ export default function EnderecoForm() {
         "\nUF:", endereco.uf
       );
     }
-  }, [endereco]);
+  }, [endereco]); // Diz para o useEffect rodar sempre que endereco alterar
+*/
 
+  // Solução atualizando estado já no HandleSearch
   const HandleSearch = async (cepDigitado) => {
-    console.log("CEP, após rodar:", cepDigitado);
     const end = await ConsultarEndereco(cepDigitado);
-    console.log("endereço definido:", end);
-    setEndereco(end); // dispara o useEffect
+
+    if (end) {
+      if (!logradouroPreenchidoAutomaticamente) setLogradouro(end.logradouro || "");
+      if (!bairroPreenchidoAutomaticamente) setBairro(end.bairro || "");
+      if (!cidadePreenchidoAutomaticamente) setCidade(end.cidade || "");
+      if (!ufPreenchidoAutomaticamente) setUf(end.uf || "");
+    }
+
+    setEndereco(end); // Chama no final pra evitar o Batching
+    console.log("endereço:", end)
   };
+
+  // Solução com form.setFieldsValue (hook do antd)
+  // Em breve
 
   return (
     <>
@@ -111,7 +124,7 @@ export default function EnderecoForm() {
               maxLength={2}
               value={uf}
               onChange={(e) => {
-                setUf(e.target.value.toUpperCase());
+                setUf(e.target.value);
                 setUfPreenchidoAutomaticamente(true);
               }}
             />
