@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Row, Col, Select } from "antd";
+import { Form, Input, InputNumber, Row, Col, Select } from "antd";
 import ConsultarEndereco from "./ConsultarEndereco.mjs";
 
 const { Option } = Select;
@@ -7,6 +7,7 @@ const { Option } = Select;
 export default function EnderecoForm() {
   const [CEP, setCEP] = useState("");
   const [endereco, setEndereco] = useState({});
+  const [onlyNumb, setOnlyNumb] = useState(true);
 
   const [logradouro, setLogradouro] = useState("");
   const [logradouroPreenchidoAutomaticamente, setLogradouroPreenchidoAutomaticamente] = useState(false);
@@ -22,6 +23,7 @@ export default function EnderecoForm() {
 
   // Atualiza os campos quando o endereço muda, mas só se o usuário ainda não mexeu
 
+/*
   useEffect(() => {
     if (endereco && endereco.logradouro) {
       if (!logradouroPreenchidoAutomaticamente) setLogradouro(endereco.logradouro || "");
@@ -38,12 +40,30 @@ export default function EnderecoForm() {
       );
     }
   }, [endereco]);
+*/
+
+useEffect(() => {
+  if (!isNaN(Number(CEP))) {
+    setOnlyNumb(true);
+  } else {
+    setOnlyNumb(false);
+  }
+}, [CEP]);
+
 
   const HandleSearch = async (cepDigitado) => {
+    
     console.log("CEP, após rodar:", cepDigitado);
     const end = await ConsultarEndereco(cepDigitado);
     console.log("endereço definido:", end);
-    setEndereco(end); // dispara o useEffect
+    
+    setCEP(end.CEP);
+    setLogradouro(end.logradouro);
+    setBairro(end.bairro);
+    setCidade(end.cidade);
+    setUf(end.uf)
+    
+    //setEndereco(end); // dispara o useEffect
   };
 
   return (
@@ -51,19 +71,27 @@ export default function EnderecoForm() {
       <Form.Item
         label="CEP"
         name={["endereco", "cep"]}
-        rules={[{ required: true, message: "Informe o CEP!" }]}
+        rules={[{ required: true, message: "O CEP deve conter 8 digitos numéricos"}]}
       >
-        <Input
-          placeholder="00000-000"
-          maxLength={9}
+        <Input length={8}
+          placeholder="00000000"
+          maxLength={8}
+          status=""
           value={CEP}
           onChange={(e) => {
             const novoCep = e.target.value;
             setCEP(novoCep);
             console.log("Digitando:", novoCep);
-            if (novoCep.length === 9) {
+
+            if (novoCep.length === 8 && !isNaN(Number(novoCep))) {
               HandleSearch(novoCep);
+              console.log("Buscando endereço na API")
+              }
+            if(isNaN(Number(novoCep))){
+              console.log("Não é um número")
+              e.target.status="error"
             }
+
           }}
         />
       </Form.Item>
