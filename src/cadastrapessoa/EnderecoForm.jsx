@@ -1,101 +1,50 @@
-import React, { useState, useEffect } from "react";
-import { Form, Input, InputNumber, Row, Col, Select } from "antd";
+import React, { useState } from "react";
+import { Form, Input, Row, Col, Select } from "antd";
 import ConsultarEndereco from "./ConsultarEndereco.mjs";
 
 const { Option } = Select;
 
 export default function EnderecoForm() {
   const [CEP, setCEP] = useState("");
-  const [endereco, setEndereco] = useState({});
-  const [onlyNumb, setOnlyNumb] = useState(true);
-
   const [logradouro, setLogradouro] = useState("");
-  const [logradouroPreenchidoAutomaticamente, setLogradouroPreenchidoAutomaticamente] = useState(false);
-
   const [bairro, setBairro] = useState("");
-  const [bairroPreenchidoAutomaticamente, setBairroPreenchidoAutomaticamente] = useState(false);
-
   const [cidade, setCidade] = useState("");
-  const [cidadePreenchidoAutomaticamente, setCidadePreenchidoAutomaticamente] = useState(false);
-
   const [uf, setUf] = useState("");
-  const [ufPreenchidoAutomaticamente, setUfPreenchidoAutomaticamente] = useState(false);
+  const [cepError, setCepError] = useState(false);
 
-
-  // Atualiza os campos quando o endereço muda, mas só se o usuário ainda não mexeu
-
-/*
-  useEffect(() => {
-    if (endereco && endereco.logradouro) {
-      if (!logradouroPreenchidoAutomaticamente) setLogradouro(endereco.logradouro || "");
-      if (!bairroPreenchidoAutomaticamente) setBairro(endereco.bairro || "");
-      if (!cidadePreenchidoAutomaticamente) setCidade(endereco.cidade || "");
-      if (!ufPreenchidoAutomaticamente) setUf(endereco.uf || "");
-
-      console.log("Campos atualizados via useEffect:",
-        "\nENDEREÇO:", endereco,
-        "\nLOGRADOURO:", endereco.logradouro,
-        "\nBAIRRO:", endereco.bairro,
-        "\nCIDADE:", endereco.cidade,
-        "\nUF:", endereco.uf
-      );
-    }
-  }, [endereco]);
-*/
-
-useEffect(() => {
-  if (!isNaN(Number(CEP))) {
-    setOnlyNumb(true);
-  } else {
-    setOnlyNumb(false);
-  }
-}, [CEP]);
-
-
-  // Solução atualizando estado já no HandleSearch
   const HandleSearch = async (cepDigitado) => {
-    
-    console.log("CEP, após rodar:", cepDigitado);
     const end = await ConsultarEndereco(cepDigitado);
-    console.log("endereço definido:", end);
-    
-    setCEP(end.CEP);
-    setLogradouro(end.logradouro);
-    setBairro(end.bairro);
-    setCidade(end.cidade);
-    setUf(end.uf)
-    
+    setLogradouro(end.logradouro || "");
+    setBairro(end.bairro || "");
+    setCidade(end.localidade || end.cidade || "");
+    setUf(end.uf || "");
   };
-
-  // Solução com form.setFieldsValue (hook do antd)
-  // Em breve
 
   return (
     <>
       <Form.Item
         label="CEP"
         name={["endereco", "cep"]}
-        rules={[{ required: true, message: "O CEP deve conter 8 digitos numéricos"}]}
+        rules={[{ required: true, message: "O CEP deve conter 8 dígitos numéricos" }]}
+        validateStatus={cepError ? "error" : ""}
+        help={cepError ? "Digite apenas números (8 dígitos)" : ""}
       >
-        <Input length={8}
+        <Input
           placeholder="00000000"
           maxLength={8}
-          status=""
           value={CEP}
           onChange={(e) => {
             const novoCep = e.target.value;
             setCEP(novoCep);
-            console.log("Digitando:", novoCep);
-
+            // atribuindo como "novoCep" apara evitar o atraso de uma re-renderização
             if (novoCep.length === 8 && !isNaN(Number(novoCep))) {
+              setCepError(false);
               HandleSearch(novoCep);
-              console.log("Buscando endereço na API")
-              }
-            if(isNaN(Number(novoCep))){
-              console.log("Não é um número")
-              e.target.status="error"
+            } else if (isNaN(Number(novoCep))) {
+              setCepError(true);
+            } else {
+              setCepError(false);
             }
-
           }}
         />
       </Form.Item>
@@ -104,10 +53,7 @@ useEffect(() => {
         <Input
           placeholder="Rua / Avenida"
           value={logradouro}
-          onChange={(e) => {
-            setLogradouro(e.target.value);
-            setLogradouroPreenchidoAutomaticamente(true);
-          }}
+          onChange={(e) => setLogradouro(e.target.value)}
         />
       </Form.Item>
 
@@ -115,10 +61,7 @@ useEffect(() => {
         <Input
           placeholder="Bairro"
           value={bairro}
-          onChange={(e) => {
-            setBairro(e.target.value);
-            setBairroPreenchidoAutomaticamente(true);
-          }}
+          onChange={(e) => setBairro(e.target.value)}
         />
       </Form.Item>
 
@@ -128,10 +71,7 @@ useEffect(() => {
             <Input
               placeholder="Cidade"
               value={cidade}
-              onChange={(e) => {
-                setCidade(e.target.value);
-                setCidadePreenchidoAutomaticamente(true);
-              }}
+              onChange={(e) => setCidade(e.target.value)}
             />
           </Form.Item>
         </Col>
@@ -142,10 +82,7 @@ useEffect(() => {
               placeholder="UF"
               maxLength={2}
               value={uf}
-              onChange={(e) => {
-                setUf(e.target.value);
-                setUfPreenchidoAutomaticamente(true);
-              }}
+              onChange={(e) => setUf(e.target.value)}
             />
           </Form.Item>
         </Col>
