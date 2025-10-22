@@ -13,7 +13,7 @@ export default async function ConsultarEndereco(cep) {
     throw new Error("CEP não encontrado na base do ViaCEP.");
   }
 
-  // Retorna objeto com os dados da API
+  // Retorna objeto personalizado com os dados da API
   return {
       CEP: dados.cep,
       logradouro: dados.logradouro,
