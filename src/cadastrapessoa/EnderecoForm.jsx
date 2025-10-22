@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Form, Input, Row, Col, Select } from "antd";
 import ConsultarEndereco from "./ConsultarEndereco.mjs";
 
@@ -6,44 +6,18 @@ const { Option } = Select;
 
 export default function EnderecoForm() {
   const [CEP, setCEP] = useState("");
-  const [endereco, setEndereco] = useState({});
-
   const [logradouro, setLogradouro] = useState("");
-  const [logradouroPreenchidoAutomaticamente, setLogradouroPreenchidoAutomaticamente] = useState(false);
-
   const [bairro, setBairro] = useState("");
-  const [bairroPreenchidoAutomaticamente, setBairroPreenchidoAutomaticamente] = useState(false);
-
   const [cidade, setCidade] = useState("");
-  const [cidadePreenchidoAutomaticamente, setCidadePreenchidoAutomaticamente] = useState(false);
-
   const [uf, setUf] = useState("");
-  const [ufPreenchidoAutomaticamente, setUfPreenchidoAutomaticamente] = useState(false);
-
-  // Atualiza os campos quando o endereço muda, mas só se o usuário ainda não mexeu
-
-  useEffect(() => {
-    if (endereco && endereco.logradouro) {
-      if (!logradouroPreenchidoAutomaticamente) setLogradouro(endereco.logradouro || "");
-      if (!bairroPreenchidoAutomaticamente) setBairro(endereco.bairro || "");
-      if (!cidadePreenchidoAutomaticamente) setCidade(endereco.cidade || "");
-      if (!ufPreenchidoAutomaticamente) setUf(endereco.uf || "");
-
-      console.log("Campos atualizados via useEffect:",
-        "\nENDEREÇO:", endereco,
-        "\nLOGRADOURO:", endereco.logradouro,
-        "\nBAIRRO:", endereco.bairro,
-        "\nCIDADE:", endereco.cidade,
-        "\nUF:", endereco.uf
-      );
-    }
-  }, [endereco]);
+  const [cepError, setCepError] = useState(false);
 
   const HandleSearch = async (cepDigitado) => {
-    console.log("CEP, após rodar:", cepDigitado);
     const end = await ConsultarEndereco(cepDigitado);
-    console.log("endereço definido:", end);
-    setEndereco(end); // dispara o useEffect
+    setLogradouro(end.logradouro || "");
+    setBairro(end.bairro || "");
+    setCidade(end.localidade || end.cidade || "");
+    setUf(end.uf || "");
   };
 
   return (
@@ -51,18 +25,25 @@ export default function EnderecoForm() {
       <Form.Item
         label="CEP"
         name={["endereco", "cep"]}
-        rules={[{ required: true, message: "Informe o CEP!" }]}
+        rules={[{ required: true, message: "O CEP deve conter 8 dígitos numéricos" }]}
+        validateStatus={cepError ? "error" : ""}
+        help={cepError ? "Digite apenas números (8 dígitos)" : ""}
       >
         <Input
-          placeholder="00000-000"
-          maxLength={9}
+          placeholder="00000000"
+          maxLength={8}
           value={CEP}
           onChange={(e) => {
             const novoCep = e.target.value;
             setCEP(novoCep);
-            console.log("Digitando:", novoCep);
-            if (novoCep.length === 9) {
+            // atribuindo como "novoCep" apara evitar o atraso de uma re-renderização
+            if (novoCep.length === 8 && !isNaN(Number(novoCep))) {
+              setCepError(false);
               HandleSearch(novoCep);
+            } else if (isNaN(Number(novoCep))) {
+              setCepError(true);
+            } else {
+              setCepError(false);
             }
           }}
         />
@@ -72,10 +53,7 @@ export default function EnderecoForm() {
         <Input
           placeholder="Rua / Avenida"
           value={logradouro}
-          onChange={(e) => {
-            setLogradouro(e.target.value);
-            setLogradouroPreenchidoAutomaticamente(true);
-          }}
+          onChange={(e) => setLogradouro(e.target.value)}
         />
       </Form.Item>
 
@@ -83,10 +61,7 @@ export default function EnderecoForm() {
         <Input
           placeholder="Bairro"
           value={bairro}
-          onChange={(e) => {
-            setBairro(e.target.value);
-            setBairroPreenchidoAutomaticamente(true);
-          }}
+          onChange={(e) => setBairro(e.target.value)}
         />
       </Form.Item>
 
@@ -96,10 +71,7 @@ export default function EnderecoForm() {
             <Input
               placeholder="Cidade"
               value={cidade}
-              onChange={(e) => {
-                setCidade(e.target.value);
-                setCidadePreenchidoAutomaticamente(true);
-              }}
+              onChange={(e) => setCidade(e.target.value)}
             />
           </Form.Item>
         </Col>
@@ -110,10 +82,7 @@ export default function EnderecoForm() {
               placeholder="UF"
               maxLength={2}
               value={uf}
-              onChange={(e) => {
-                setUf(e.target.value.toUpperCase());
-                setUfPreenchidoAutomaticamente(true);
-              }}
+              onChange={(e) => setUf(e.target.value)}
             />
           </Form.Item>
         </Col>
