@@ -3,7 +3,7 @@ import { Button, Form, Input, Space, List } from "antd";
 
 function TelefoneList(props) {
   const form = props.form;
-  const [telefones, setTelefones] = useState([]);
+  const [] = useState([]);
   const [ddd, setDdd] = useState("");
   const [numero, setNumero] = useState("");
 
