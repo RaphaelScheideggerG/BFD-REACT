@@ -7,16 +7,16 @@ import VisualizaPessoa from "../components/visualizapessoa/VisualizarPessoaBack.
 
 function AppRoutes() {
   return (
-    <Routes>
-      {/* Todas as rotas dentro do layout principal */}
-      <Route path="/" element={<MainLayout />}>
-        <Route index element={<Navigate to="cadastrar" replace />} />
-        <Route path="cadastrar"  element={<PessoaForm />} />
-        <Route path="listar" element={<ListaPessoas />} />
-        <Route path="visualizar/:tipo/:id" element={<VisualizaPessoa />} />
-        <Route path="editar/:tipo/:id" element={<PessoaForm />} /> 
-      </Route>
-    </Routes>
+  <Routes>
+    {/* Todas as rotas dentro do layout principal */}
+    <Route path="/" element={<MainLayout />}>
+    <Route index element={<Navigate to="cadastrar" replace />} />
+    <Route path="cadastrar" element={<PessoaForm />} />
+    <Route path="listar" element={<ListaPessoas />} />
+    <Route path="visualizar/:tipo/:id" element={<VisualizaPessoa />} />
+    <Route path="editar/:tipo/:id" element={<PessoaForm />} />
+    </Route>
+  </Routes>
   );
 }
 export default AppRoutes;

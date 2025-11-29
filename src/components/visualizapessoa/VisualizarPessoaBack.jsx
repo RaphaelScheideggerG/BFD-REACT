@@ -3,6 +3,8 @@ import { Card, Descriptions, Button } from "antd";
 import { useParams, useNavigate } from "react-router-dom";
 import PFDAO from "../../objetos/dao/PFDAOBackEnd.mjs";
 import PJDAO from "../../objetos/dao/PJDAOBackEnd.mjs";
+import dayjs from "dayjs";
+import "dayjs/locale/pt-br";
 
 export default function VisualizaPessoa() {
   const { tipo, id } = useParams();
@@ -10,14 +12,18 @@ export default function VisualizaPessoa() {
 
   const [pessoa, setPessoa] = useState(null);
 
-  useEffect(() => {
-    const dao = tipo === "PF" ? new PFDAO() : new PJDAO();
-    const lista = dao.listar();
+useEffect(() => {
+  const dao = tipo === "PF" ? new PFDAO() : new PJDAO();
 
-    // 🔹 Busca unificada pelo ID
+  async function carregar() {
+    const lista = await dao.listar(); // aguarda a Promise
     const encontrada = lista.find((p) => p.id === id);
     if (encontrada) setPessoa(encontrada);
-  }, [tipo, id]);
+  }
+
+  carregar();
+}, [tipo, id]);
+
 
   if (!pessoa) {
     return (
@@ -52,10 +58,17 @@ export default function VisualizaPessoa() {
           <Descriptions.Item label="E-mail">{pessoa.email}</Descriptions.Item>
 
           {tipo === "PF" ? (
-            <Descriptions.Item label="CPF">{pessoa.cpf}</Descriptions.Item>
+            <>
+              <Descriptions.Item label="CPF">{pessoa.cpf}</Descriptions.Item>
+              <Descriptions.Item label="Data de Nascimento">
+                {pessoa.dataNascimento
+                  ? dayjs(pessoa.dataNascimento).format("DD/MM/YYYY") : "Não informado"}
+              </Descriptions.Item>
+            </>
           ) : (
             <Descriptions.Item label="CNPJ">{pessoa.cnpj}</Descriptions.Item>
           )}
+
 
           {/* Endereço */}
           <Descriptions.Item label="Endereço">
@@ -87,7 +100,7 @@ export default function VisualizaPessoa() {
             <>
               <Descriptions.Item label="Inscrição Estadual">
                 {pessoa.ie?.numero
-                  ? `Nº ${pessoa.ie.numero} - ${pessoa.ie.estado} (${pessoa.ie.dataRegistro})`
+                  ? `Nº ${pessoa.ie.numero} - ${pessoa.ie.estado} (${dayjs(pessoa.ie.dataRegistro).format("DD/MM/YYYY")})`
                   : "Não informado"}
               </Descriptions.Item>
             </>

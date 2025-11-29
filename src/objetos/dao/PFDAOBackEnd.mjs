@@ -1,23 +1,19 @@
 import PF from "../pessoas/PF.mjs";
 
 export default class PFDAO {
+  constructor(id = null) {
+    this.baseUrl = "https://backend-pessoas.vercel.app/pf";
+    this.cache = [];
 
-    constructor(id = null) {
-        this.baseUrl = "https://backend-pessoas.vercel.app/pf";
-        this.cache = [];
-      
-        if (id) {
-          // Carrega um único registro e guarda no cache
-          this.cache = [];
-          this.buscarPorId(id).then((pessoa) => {
-            if (pessoa) this.cache = [pessoa];
-          });
-        } else {
-          // Carrega a lista completa
-          this.carregarLista();
-        }
-      }
-  
+    if (id) {
+      this.cache = [];
+      this.buscarPorId(id).then((pessoa) => {
+        if (pessoa) this.cache = [pessoa];
+      });
+    } else {
+      this.carregarLista();
+    }
+  }
 
   // 🔹 Busca remota e atualiza o cache
   async carregarLista() {
@@ -33,11 +29,10 @@ export default class PFDAO {
     }
   }
 
-  // 🔹 Retorna cache atual (sincrônico, compatível com React)
-  listar() {
+  // 🔹 Retorna cache atual (assíncrono)
+  async listar() {
     if (!this.cache || this.cache.length === 0) {
-      // dispara atualização assíncrona, mas retorna array
-      this.carregarLista();
+      await this.carregarLista();
     }
     return this.cache;
   }
@@ -107,6 +102,7 @@ export default class PFDAO {
       nome: pf.nome,
       email: pf.email,
       cpf: pf.cpf,
+      dataNascimento: pf.data, // 👈 campo herdado de PessoaBase
       endereco: pf.endereco
         ? {
             cep: pf.endereco.cep,
@@ -142,6 +138,7 @@ export default class PFDAO {
       nome: pf.getNome?.(),
       email: pf.getEmail?.(),
       cpf: pf.getCPF?.(),
+      data: pf.getDataNascimento?.(),
       endereco: end
         ? {
             cep: end.getCep?.(),
@@ -166,20 +163,17 @@ export default class PFDAO {
     };
   }
 
-   // 🔹 Busca uma PF específica por ID
-async buscarPorId(id) {
-    // tenta primeiro no cache
+  // 🔹 Busca uma PF específica por ID
+  async buscarPorId(id) {
     const existente = this.cache.find((p) => p.id === id);
     if (existente) return existente;
-  
-    // se não existir, busca diretamente no backend
+
     try {
       const resp = await fetch(`${this.baseUrl}/${id}`);
       if (!resp.ok) throw new Error("Erro ao buscar PF por ID");
       const data = await resp.json();
       const pessoa = this.mapPF(data);
-  
-      // adiciona no cache para futuras buscas
+
       this.cache.push(pessoa);
       return pessoa;
     } catch (e) {
@@ -187,5 +181,4 @@ async buscarPorId(id) {
       return null;
     }
   }
-    
 }

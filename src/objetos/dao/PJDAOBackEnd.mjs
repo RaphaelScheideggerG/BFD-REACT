@@ -1,20 +1,20 @@
 import PJ from "../pessoas/PJ.mjs";
 
 export default class PJDAO {
-    constructor(id = null) {
-        this.baseUrl = "https://backend-pessoas.vercel.app/pj";
-        this.cache = [];
-      
-        if (id) {
-          this.cache = [];
-          this.buscarPorId(id).then((pessoa) => {
-            if (pessoa) this.cache = [pessoa];
-          });
-        } else {
-          this.carregarLista();
-        }
-      }
-      
+  constructor(id = null) {
+    this.baseUrl = "https://backend-pessoas.vercel.app/pj";
+    this.cache = [];
+
+    if (id) {
+      this.cache = [];
+      this.buscarPorId(id).then((pessoa) => {
+        if (pessoa) this.cache = [pessoa];
+      });
+    } else {
+      this.carregarLista();
+    }
+  }
+
   async carregarLista() {
     try {
       const resp = await fetch(this.baseUrl);
@@ -28,9 +28,9 @@ export default class PJDAO {
     }
   }
 
-  listar() {
+  async listar() {
     if (!this.cache || this.cache.length === 0) {
-      this.carregarLista();
+      await this.carregarLista();
     }
     return this.cache;
   }
@@ -93,6 +93,7 @@ export default class PJDAO {
     }
   }
 
+
   mapPJ(pj) {
     return {
       id: pj._id,
@@ -122,6 +123,7 @@ export default class PJDAO {
         : {},
     };
   }
+
 
   toPlain(pj) {
     if (!pj) return {};
@@ -160,13 +162,13 @@ export default class PJDAO {
   async buscarPorId(id) {
     const existente = this.cache.find((p) => p.id === id);
     if (existente) return existente;
-  
+
     try {
       const resp = await fetch(`${this.baseUrl}/${id}`);
       if (!resp.ok) throw new Error("Erro ao buscar PJ por ID");
       const data = await resp.json();
       const pessoa = this.mapPJ(data);
-  
+
       this.cache.push(pessoa);
       return pessoa;
     } catch (e) {

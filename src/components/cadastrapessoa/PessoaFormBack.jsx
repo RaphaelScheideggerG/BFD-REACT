@@ -35,12 +35,13 @@ export default function PessoaForm() {
   // EFEITO: Carregar dados no modo edição
   // =========================
   useEffect(() => {
+  async function carregarPessoa() {
     if (id && tipoParam) {
       setEditando(true);
       setTipo(tipoParam);
 
       const dao = tipoParam === "PF" ? pfDAO : pjDAO;
-      const lista = dao.listar();
+      const lista = await dao.listar(); // 👈 agora espera o array
       const pessoa = lista.find((p) => p.id === id);
 
       if (pessoa) {
@@ -57,6 +58,9 @@ export default function PessoaForm() {
         if (tipoParam === "PF") {
           valores.cpf = pessoa.cpf;
           valores.titulo = pessoa.titulo || { numero: "", zona: "", secao: "" };
+          valores.dataNascimento = pessoa.dataNascimento
+            ? dayjs(pessoa.dataNascimento)
+            : null;
         } else {
           const ieObj = pessoa.ie || {};
           valores.cnpj = pessoa.cnpj;
@@ -75,7 +79,11 @@ export default function PessoaForm() {
         navigate("/listar");
       }
     }
-  }, [id, tipoParam]);
+  }
+
+  carregarPessoa();
+}, [id, tipoParam]);
+
 
   // =========================
   // TROCA PF/PJ

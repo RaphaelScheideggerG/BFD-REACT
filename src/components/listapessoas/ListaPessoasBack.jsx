@@ -16,16 +16,20 @@ export default function ListaPessoas() {
   const pjDAO = new PJDAO();
 
   // 🔹 Atualiza a lista conforme o tipo ou filtro
-  function carregarLista() {
+  async function carregarLista() {
     const dao = tipo === "PF" ? pfDAO : pjDAO;
-    const lista = dao.listar();
-
-    const filtrados = lista.filter((p) =>
-      p.nome?.toLowerCase().includes(filtroNome.toLowerCase())
-    );
-
-    setDados(filtrados);
+    try {
+      const lista = await dao.listar(); // aguarda a Promise
+      const filtrados = lista.filter((p) =>
+        p.nome?.toLowerCase().includes(filtroNome.toLowerCase())
+      );
+      setDados(filtrados);
+    } catch (err) {
+      console.error("Erro ao carregar lista:", err);
+      message.error("Não foi possível carregar os dados");
+    }
   }
+
 
   useEffect(() => {
     carregarLista();
@@ -120,7 +124,7 @@ export default function ListaPessoas() {
       <Table
         dataSource={dados}
         columns={colunas}
-        rowKey="id"
+        rowKey="_id"
         pagination={{ pageSize: 6 }}
       />
     </div>
