@@ -41,7 +41,7 @@ export default function PessoaForm() {
       setTipo(tipoParam);
 
       const dao = tipoParam === "PF" ? pfDAO : pjDAO;
-      const lista = await dao.listar(); // 👈 agora espera o array
+      const lista = await dao.listar();
       const pessoa = lista.find((p) => p.id === id);
 
       if (pessoa) {
@@ -152,7 +152,6 @@ export default function PessoaForm() {
           ie.setNumero(values.ie.numero);
           ie.setEstado(values.ie.estado);
 
-          // 👇 converte dayjs → string para salvar no DAO
           const dr = values.ie.dataRegistro;
           const dataRegistro =
             dr && typeof dr === "object" && typeof dr.format === "function"
